@@ -1,8 +1,4 @@
-// Test ID: IIDSAT
-
 import { useFetcher, useLoaderData } from 'react-router-dom';
-import { getOrder } from '../../services/apiRestaurant';
-
 import OrderItem from './OrderItem';
 import {
   calcMinutesLeft,
@@ -24,15 +20,15 @@ function Order() {
     [fetcher],
   );
 
-  // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
+  // Everyone can search for all orders, so for privacy reasons we're gonna exclude names or address (these are only for staff)
   const {
     id,
     status,
     priority,
-    priorityPrice,
-    orderPrice,
+    priorityPrice = 0,
+    orderPrice = 0,
     estimatedDelivery,
-    cart,
+    cart = [],
   } = order;
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
@@ -56,7 +52,7 @@ function Order() {
       <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 px-6 py-4">
         <p className="font-medium">
           {deliveryIn >= 0
-            ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
+            ? `Only ${deliveryIn} minutes left 😃`
             : 'Order should have arrived'}
         </p>
         <p className="text-xs text-stone-500">
@@ -95,15 +91,6 @@ function Order() {
       {!priority && <UpdateOrder order={order} />}
     </div>
   );
-}
-
-export async function loader({ params }) {
-  // Simulate fetching order data from an API
-  // In a real application, you would replace this with an actual API call
-  const order = await getOrder(params.orderId);
-
-  // Here we return the static order data for demonstration purposes
-  return order;
 }
 
 export default Order;
